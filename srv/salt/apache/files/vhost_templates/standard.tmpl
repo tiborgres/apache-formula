@@ -1,0 +1,59 @@
+{% if confitem.port is defined %}
+# HTTP
+<VirtualHost {{ confitem.interface }}:{{ confitem.port }}>
+  {%+ if confitem.ServerName is defined %}ServerName {{ confitem.ServerName }}
+  {% endif %}
+  {%+ if confitem.ServerAlias is defined %}ServerAlias {{ confitem.ServerAlias }}
+  {% endif %}
+  {%+ if confitem.ServerAdmin is defined %}ServerAdmin {{ confitem.ServerAdmin }}
+  {% endif %}
+  {%+ if confitem.DocumentRoot is defined %}DocumentRoot {{ confitem.DocumentRoot }}
+  {% endif %}
+  {%+ if confitem.LogLevel is defined %}LogLevel {{ confitem.LogLevel }}
+  {% endif %}
+  {%+ if confitem.ErrorLog is defined %}ErrorLog {{ confitem.ErrorLog }}
+  {% endif %}
+  {%+ if confitem.CustomLog is defined %}CustomLog {{ confitem.CustomLog }}
+  {% endif %}
+  {% if confitem.ProxyPassReverse is defined %}
+    {% for pprsource, pprtarget in confitem.ProxyPassReverse.items() %}
+  ProxyPassReverse {{ pprsource }} {{ pprtarget }}
+    {% endfor %}
+  {% endif %}
+</VirtualHost>
+{% endif %}
+
+{% if confitem.sslport is defined %}
+# HTTPS
+<VirtualHost {{ confitem.interface }}:{{ confitem.sslport }}>
+  {%+ if confitem.ServerName is defined %}ServerName {{ confitem.ServerName }}
+  {% endif %}
+  {%+ if confitem.ServerAlias is defined %}ServerAlias {{ confitem.ServerAlias }}
+  {% endif %}
+  {%+ if confitem.ServerAdmin is defined %}ServerAdmin {{ confitem.ServerAdmin }}
+  {% endif %}
+  {%+ if confitem.DocumentRoot is defined %}DocumentRoot {{ confitem.DocumentRoot }}
+  {% endif %}
+  {%+ if confitem.LogLevel is defined %}LogLevel {{ confitem.LogLevel }}
+  {% endif %}
+  {%+ if confitem.ErrorLog is defined %}ErrorLog {{ confitem.ErrorLog }}
+  {% endif %}
+  {%+ if confitem.CustomLog is defined %}CustomLog {{ confitem.CustomLog }}
+  {% endif %}
+  {% if confitem.SSLEngine is defined and confitem.SSLEngine == True and confitem.SSLCertificateFile is defined and confitem.SSLCertificateKeyFile is defined and confitem.SSLCACertificateFile is defined %}
+  SSLEngine on
+  SSLCertificateFile {{ confitem.SSLCertificateFile }}
+  SSLCertificateKeyFile {{ confitem.SSLCertificateKeyFile }}
+  SSLCACertificateFile {{ confitem.SSLCACertificateFile }}
+  
+    {% if confitem.SSLProxyEngine is defined and confitem.SSLProxyEngine == True %}
+  SSLProxyEngine {{ confitem.SSLProxyEngine }}
+      {% if confitem.ProxyPassReverse is defined %}
+        {% for pprsource, pprtarget in confitem.ProxyPassReverse.items() %}
+  ProxyPassReverse {{ pprsource }} {{ pprtarget }}
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+</VirtualHost>
+{% endif %}

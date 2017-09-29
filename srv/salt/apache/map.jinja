@@ -1,0 +1,24 @@
+{% import_yaml "apache/osfingermap.yaml" as osfingermap %}
+
+{% set apache = salt['grains.filter_by']({
+	'RedHat': {
+        'server': 'httpd',
+        'service': 'httpd',
+        'user': 'apache',
+        'group': 'apache',
+        'configfile': '/etc/httpd/conf/httpd.conf',
+        'sslconfigfile': '/etc/httpd/conf.d/ssl.conf',
+        'vhostdir': '/etc/httpd/vhosts.d',
+        'confdir': '/etc/httpd/conf.d',
+        'confext': '.conf',
+        'default_site': 'default',
+        'default_site_ssl': 'default-ssl',
+        'logdir': '/var/log/httpd',
+        'logrotatedir': '/etc/logrotate.d/httpd',
+        'wwwdir': '/var/www',
+        'default_charset': 'UTF-8',
+        'modssl': 'mod_ssl', 
+    },
+}, grain='os_family', merge=salt['grains.filter_by'](
+    osfingermap
+, grain='osfinger', merge=salt['pillar.get']('apache:lookup'))) %}
